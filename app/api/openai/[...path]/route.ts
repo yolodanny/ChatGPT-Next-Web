@@ -21,7 +21,7 @@ async function handle(
 
   console.log("accessCode accessCode", accessCode);
   const res = await fetch(
-    `http://localhost:3000/api/verify?code=${accessCode}`,
+    `${process.env.HOST_URL}/api/verify?code=${accessCode}`,
     fetchOptions,
   );
   const resJson = await res.json();
