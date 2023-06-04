@@ -29,6 +29,7 @@ export async function connectToDatabase(): Promise<void> {
     });
     console.log("mongo connected");
   } catch (error) {
+    console.log("error->", error);
     console.log("error->", "mongo connect error");
     // global.mongodb = null;
   }
