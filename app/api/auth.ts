@@ -25,6 +25,15 @@ function parseApiKey(bearToken: string) {
   };
 }
 
+export function getAccessCode(req: NextRequest) {
+  const authToken = req.headers.get("Authorization") ?? "";
+
+  // check if it is openai api key or user token
+  const { accessCode } = parseApiKey(authToken);
+
+  return accessCode;
+}
+
 export function auth(req: NextRequest) {
   const authToken = req.headers.get("Authorization") ?? "";
 
