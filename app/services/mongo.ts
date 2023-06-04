@@ -17,6 +17,9 @@ export async function connectToDatabase(): Promise<void> {
       "mongodb+srv://wxttt:Wjxylwx4mongo@sandbox.1zy14.mongodb.net/?retryWrites=true&w=majority";
     const MONGODB_NAME = "chat";
 
+    console.log("mongo uri is ", process.env.MONGODB_URI);
+    console.log("mongo dbname is ", process.env.MONGODB_NAME);
+
     await mongoose.connect(process.env.MONGODB_URI as string, {
       bufferCommands: true,
       dbName: process.env.MONGODB_NAME,
