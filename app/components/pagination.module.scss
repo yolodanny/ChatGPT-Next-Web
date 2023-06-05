@@ -1,0 +1,38 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 10px;
+  font-size: 14px;
+
+  .actionBtn,.pageBtn {
+    box-sizing: border-box;
+    height: 32px;
+    min-width: 32px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    padding: 6px 12px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .pageBtn{
+    padding: 6px;
+  }
+
+  .input {
+    padding: 4px;
+    margin: 0 5px;
+    width: 50px;
+    border: 1px solid #ccc;
+    text-align: center;
+  }
+}

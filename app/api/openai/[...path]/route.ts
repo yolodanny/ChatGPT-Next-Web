@@ -11,25 +11,26 @@ async function handle(
 ) {
   console.log("[OpenAI Route] params ", params);
 
+  const accessCode = getAccessCode(req);
+
   const fetchOptions: RequestInit = {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({
+      code: accessCode,
+    }),
     cache: "no-store",
   };
-  const accessCode = getAccessCode(req);
 
-  console.log("accessCode accessCode", accessCode);
-  const res = await fetch(
-    `${process.env.HOST_URL}/api/verify?code=${accessCode}`,
-    fetchOptions,
-  );
+  const res = await fetch(`${process.env.HOST_URL}/api/verify`, fetchOptions);
   const resJson = await res.json();
   console.log(resJson);
 
   if (!resJson.valid) {
     return NextResponse.json(
-      { error: "密码错误" },
+      { error: resJson.error },
       {
         status: 401,
       },

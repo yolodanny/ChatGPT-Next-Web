@@ -1,4 +1,4 @@
-import { Schema, model, models, Model } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const VerifyCodeSchema = new Schema({
   code: {
@@ -24,6 +24,10 @@ const VerifyCodeSchema = new Schema({
   usedAt: {
     type: Date,
     // required: true,
+    default: null,
+  },
+  validTo: {
+    type: Date,
     default: null,
   },
   remarks: {

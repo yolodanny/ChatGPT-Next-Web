@@ -28,27 +28,63 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const codeList = [];
-  const count = 100;
-  const source = "qcfit";
-
+  const { code } = await request.json();
   await connectToDatabase();
-
-  for (let i = 0; i < count; i++) {
-    codeList.push({
-      code: uuidv4(), // 必须是唯一的字符串
-      createdAt: new Date(), // 创建时间，默认为当前时间
-      source, // 字符串，这里可以填入任何你需要的信息
-      isUsed: false, // 布尔值，表示这个验证码是否已经被使用，默认为 false
-      usedAt: null, // 日期，表示这个验证码被使用的时间，默认为 null
-      remarks: "", // 字符串，这里可以填入任何你需要的信息
-    });
-  }
-
   try {
-    await VerifyCode.insertMany(codeList);
-    return NextResponse.json({ error: false, insertCount: codeList.length });
+    const matchedCode = await VerifyCode.findOne({ code }).exec();
+
+    if (matchedCode) {
+      if (!matchedCode.remarks) {
+        return NextResponse.json({
+          valid: false,
+          error: "该激活码未分配",
+        });
+      }
+
+      if (!matchedCode.isUsed) {
+        matchedCode.isUsed = true;
+        matchedCode.usedAt = new Date();
+        const validTo = new Date();
+        validTo.setDate(validTo.getDate() + 31);
+        matchedCode.validTo = validTo;
+        await matchedCode.save();
+      }
+
+      return NextResponse.json({
+        valid: true,
+        code: matchedCode.code,
+      });
+    }
+
+    return NextResponse.json({ valid: false, error: "激活码错误" });
   } catch (e) {
-    return NextResponse.json({ error: e });
+    console.log("[error is] ", e);
+    return NextResponse.json({ valid: false, error: "服务异常,请重试" });
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const { code, remarks } = await request.json();
+    await connectToDatabase();
+    // await VerifyCode.insertMany(codeList);
+    const matchedCode = await VerifyCode.findOne({ code }).exec();
+
+    if (matchedCode) {
+      if (matchedCode.remarks) {
+        return NextResponse.json({ msg: "无法重复分配" }, { status: 500 });
+      }
+      matchedCode.remarks = remarks;
+      await matchedCode.save();
+
+      return NextResponse.json({ msg: "操作成功" }, { status: 200 });
+    }
+
+    return NextResponse.json(
+      { msg: "操作失败,没找到对应的激活码" },
+      { status: 200 },
+    );
+  } catch (e) {
+    return NextResponse.json({ msg: "操作失败" }, { status: 500 });
   }
 }

@@ -4,15 +4,25 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "../../services/mongo";
 import { VerifyCode } from "../../models/verify-code";
 
-export async function GET(request: Request) {
-  await connectToDatabase();
-  console.log("VerifyCode sssss is", VerifyCode);
+const ITEMS_PER_PAGE = 15;
 
+export async function GET(request: Request) {
   try {
-    const codes = await VerifyCode.find().exec();
+    await connectToDatabase();
+
+    const { searchParams } = new URL(request.url);
+    const searchPage = searchParams.get("page");
+    const page = searchPage ? parseInt(searchPage) : 1;
+
+    const total_count = await VerifyCode.countDocuments({});
+    const codes = await VerifyCode.find({})
+      .skip((page - 1) * ITEMS_PER_PAGE) // 跳过前面的页数
+      .limit(ITEMS_PER_PAGE); // 限制每页的数据数量
 
     return NextResponse.json({
-      valid: true,
+      total_count,
+      total_pages: Math.floor(total_count / ITEMS_PER_PAGE),
+      page,
       codes,
     });
   } catch (e) {

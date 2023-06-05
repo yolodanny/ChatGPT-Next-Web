@@ -49,6 +49,13 @@ const MaskPage = dynamic(async () => (await import("./mask")).MaskPage, {
   loading: () => <Loading noLogo />,
 });
 
+const VerifyCode = dynamic(
+  async () => (await import("./verify-code")).VerifyCode,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -102,6 +109,7 @@ function Screen() {
   const config = useAppConfig();
   const location = useLocation();
   const isHome = location.pathname === Path.Home;
+  const isVerifyCode = location.pathname === Path.VerifyCode;
   const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
@@ -119,15 +127,24 @@ function Screen() {
         }`
       }
     >
-      <SideBar className={isHome ? styles["sidebar-show"] : ""} />
-
-      <div className={styles["window-content"]} id={SlotID.AppBody}>
+      {!isVerifyCode && (
+        <SideBar className={isHome ? styles["sidebar-show"] : ""} />
+      )}
+      <div
+        className={
+          isVerifyCode
+            ? styles["window-content-full"]
+            : styles["window-content"]
+        }
+        id={SlotID.AppBody}
+      >
         <Routes>
           <Route path={Path.Home} element={<Chat />} />
           <Route path={Path.NewChat} element={<NewChat />} />
           <Route path={Path.Masks} element={<MaskPage />} />
           <Route path={Path.Chat} element={<Chat />} />
           <Route path={Path.Settings} element={<Settings />} />
+          <Route path={Path.VerifyCode} element={<VerifyCode />} />
         </Routes>
       </div>
     </div>
