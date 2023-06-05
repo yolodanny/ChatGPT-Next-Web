@@ -26,10 +26,15 @@ function parseApiKey(bearToken: string) {
 }
 
 export function getAccessCode(req: NextRequest) {
+  const serverConfig = getServerSideConfig();
+
   const authToken = req.headers.get("Authorization") ?? "";
 
   // check if it is openai api key or user token
   const { accessCode } = parseApiKey(authToken);
+
+  console.log("[Auth] use system api key"); // 注入一下服务端的key
+  req.headers.set("Authorization", `Bearer ${serverConfig.apiKey}`);
 
   return accessCode;
 }

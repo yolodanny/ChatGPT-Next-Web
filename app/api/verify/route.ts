@@ -9,15 +9,14 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
 
   await connectToDatabase();
-  console.log("VerifyCode is", VerifyCode);
   try {
-    console.log("code is", code);
     const matchedCode = await VerifyCode.findOne({ code }).exec();
-    console.log("matchedCode is", matchedCode);
+
+    console.log("matched code is", matchedCode);
     if (matchedCode) {
       return NextResponse.json({
         valid: true,
-        code: matchedCode.length,
+        code: matchedCode.code,
       });
     }
 
