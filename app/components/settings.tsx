@@ -264,13 +264,15 @@ export function Settings() {
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.isAuthorized();
-  useEffect(() => {
-    // checks per minutes
-    checkUpdate();
-    showUsage && checkUsage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const showUsage = false;
+
+  // const showUsage = accessStore.isAuthorized();
+  // useEffect(() => {
+  //   // checks per minutes
+  //   checkUpdate();
+  //   showUsage && checkUsage();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
